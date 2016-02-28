@@ -12,13 +12,16 @@ CoordMode, Mouse, Screen
 CoordMode, Tooltip, Screen
 
 Menu, Tray, Tip, dnCita
-Menu, Tray, NoStandard
-Menu, Tray, Add , Pause, Pau_se
-Menu, Tray, Add , open dnCita.ini, OpenIni
-Menu, Tray, Add , Exit, Exi
-Menu, Tray, Default, Exit
 If A_IsCompiled
+{
+  Menu, Tray, NoStandard
+  Menu, Tray, Add , Pause, Pau_se
+  Menu, Tray, Add , open dnCita.ini, OpenIni
+  Menu, Tray, Add , Exit, Exi
+  Menu, Tray, Default, Exit
   Menu, Tray, Icon , %A_ScriptName%, 1, 1
+}
+
 
 Global iniFile
 Global showAreasToggle
@@ -75,11 +78,11 @@ ShowAreas:
       IniRead, y2, %iniFile%, %sec%, y2
       a1:=x2-x1
       a2:=y2-y1
+      Gui, dnCita%sec%:-Caption -Border -Disabled +AlwaysOnTop
       Gui, dnCita%sec%:Margin, 0, 0
       Gui, dnCita%sec%:Add, Picture, x0 y0, %sec%.jpg
-      Gui dnCita%sec%:-Caption -Border
       Gui, dnCita%sec%:Color, %bgColor%
-      Gui, dnCita%sec%:Show, x%x1% y%y1% w%a1% h%a2%
+      Gui, dnCita%sec%:Show, x%x1% y%y1% w%a1% h%a2% NoActivate
     }
   }
   If showAreasToggle
@@ -105,6 +108,18 @@ RecordArea:
   }
   MouseGetPos, x2, y2
 
+  If (x2 < x1)
+  {
+    xt:=x2
+    x2:=x1
+    x1:=xt
+  }
+  If (y2 < y1)
+  {
+    yt:=y2
+    y2:=y1
+    y1:=yt
+  }
   If (x1 <> x2) and (y1 <> y2)
   {
     FormatTime, sec,,yyyyMMddHHmmss
@@ -114,10 +129,10 @@ RecordArea:
     IniWrite, %y2%, %iniFile%, %sec%, y2
     a1:=x2-x1
     a2:=y2-y1
+    Gui, dnCita%sec%:-Caption -Border -Disabled +AlwaysOnTop
     Gui, dnCita%sec%:Margin, 0, 0
-    Gui dnCita%sec%:-Caption -Border
     Gui, dnCita%sec%:Color, %bgColor%
-    Gui, dnCita%sec%:Show, x%x1% y%y1% w%a1% h%a2%
+    Gui, dnCita%sec%:Show, x%x1% y%y1% w%a1% h%a2% NoActivate
     If !showAreasToggle
     {
       Sleep, 1000
@@ -180,18 +195,48 @@ checkareas()
     m2:=y2-y1 ;box höhe
     mc1:=ax-x1 ;x click in der box
     mc2:=ay-y1 ;y click in der box
-    p1:=100/m1*mc1
-    p2:=100/m2*mc2
-    If (p1 <= 50)
-      nx:=x1
-    If (p1 >= 51)
-      nx:=x2
-    If (p2 <= 50)
-      ny:=y1
-    If (p2 >= 51)
-      ny:=y2
 
-    Click %nx%,%ny%
-    MouseMove,ax,ay
+    If (m1 > m2)
+    {
+      v:=m1/m2
+      p1:=((100*v)/m1)*mc1
+      p2:=(100/m2)*mc2
+    }
+    If (m1 < m2)
+    {
+      v:=m2/m1
+      p1:=(100/m1)*mc1
+      p2:=((100*v)/m2)*mc2
+    }
+
+
+    If (p1 <= 50)
+    {
+      nx:=x1-1
+      cx:=mc1
+    }
+    If (p1 > 50)
+    {
+      nx:=x2+1
+      cx:=m1-mc1
+    }
+    If (p2 <= 50)
+    {
+      ny:=y1-1
+      cy:=mc2
+    }
+    If (p2 > 50)
+    {
+      ny:=y2+1
+      cy:=m2-mc2
+    }
+
+    If (cx > cy)
+      nx:=ax
+    If (cx <= cy)
+      ny:=ay
+
+    Click %nx% %ny%
+    MouseMove,nx,ny
   }
 }
