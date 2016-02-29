@@ -1,11 +1,25 @@
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+;                                                                     2016-02-26
+;
+;    ¦¦¦¦¦¦¦¦_  ¦¦¦____    _¦¦¦¦¦¦¦¦  _¦      ¦¦¦        _¦¦¦¦¦¦¦¦
+;    ¦¦¦   ¯¦¦¦ ¦¦¦¯¯¯¦¦_ ¦¦¦    ¦¦¦ ¦¦¦  ¯¦¦¦¦¦¦¦¦¦_   ¦¦¦    ¦¦¦
+;    ¦¦¦    ¦¦¦ ¦¦¦   ¦¦¦ ¦¦¦    ¦¯  ¦¦¦¦    ¯¦¦¦¯¯¦¦   ¦¦¦    ¦¦¦
+;    ¦¦¦    ¦¦¦ ¦¦¦   ¦¦¦ ¦¦¦        ¦¦¦¦     ¦¦¦   ¯   ¦¦¦    ¦¦¦
+;    ¦¦¦    ¦¦¦ ¦¦¦   ¦¦¦ ¦¦¦        ¦¦¦¦     ¦¦¦     ¯¦¦¦¦¦¦¦¦¦¦¦
+;    ¦¦¦    ¦¦¦ ¦¦¦   ¦¦¦ ¦¦¦    ¦_  ¦¦¦      ¦¦¦       ¦¦¦    ¦¦¦
+;    ¦¦¦   _¦¦¦ ¦¦¦   ¦¦¦ ¦¦¦    ¦¦¦ ¦¦¦      ¦¦¦       ¦¦¦    ¦¦¦
+;    ¦¦¦¦¦¦¦¦¯   ¯¦   ¦¯  ¦¦¦¦¦¦¦¦¯  ¦¯      _¦¦¦¦¯     ¦¦¦    ¦¯
+;                                           writen by BNK3R-Boy
+;
+;
+#NoEnv
+; #Warn
 #SingleInstance force
 #InstallKeybdHook
 #InstallMouseHook
 #Persistent
+
+SendMode Input
+SetWorkingDir %A_ScriptDir%
 
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
@@ -197,7 +211,6 @@ checkareas(pressbutton)
   }
   Else
   {
-    SoundBeep,666,64
 
     m1:=x2-x1 ;box breite
     m2:=y2-y1 ;box höhe
@@ -243,6 +256,22 @@ checkareas(pressbutton)
       nx:=ax
     If (cx <= cy)
       ny:=ay
+
+
+    s1:=ax-nx
+    s2:=ay-ny
+    If (s1 < 0)
+      s1:=s1*-1
+    If (s2 < 0)
+      s2:=s2*-1
+
+    If (s1 < s2)
+      beep:=s2*30
+    If (s1 > s2)
+      beep:=s1*30
+
+    beep:=beep+300
+    SoundBeep,beep,64
 
     Click %pressbutton% %nx% %ny%
     MouseMove,nx,ny
