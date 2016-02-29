@@ -36,7 +36,8 @@ RButton::checkareas("right")
 !RButton::Gosub,DeleteArea
 !LButton::Gosub,RecordArea
 !mButton::GoSub,ShowAreas
-+LButton::click
++LButton::MouseClick, left
++RButton::MouseClick, right
 
 #If !A_IsCompiled
 F8::exitapp
