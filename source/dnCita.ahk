@@ -31,7 +31,8 @@ bgColor=000000
 iniFile=dnCita.ini
 
 
-LButton::checkareas()
+LButton::checkareas("left")
+RButton::checkareas("right")
 !RButton::Gosub,DeleteArea
 !LButton::Gosub,RecordArea
 !mButton::GoSub,ShowAreas
@@ -156,8 +157,14 @@ Pau_se:
   Menu, Tray, ToggleCheck, Pause
 Return
 
-checkareas()
+checkareas(pressbutton)
 {
+  If (pressbutton == "right")
+    key:="RButton"
+  If (pressbutton == "left")
+    key:="LButton"
+
+
   MouseGetPos, ax, ay
   res=1
   IniRead, res, %iniFile%
@@ -178,14 +185,14 @@ checkareas()
 
   If res
   {
-    MouseClick,,,,,,D
+    MouseClick,%pressbutton%,,,,,D
     Loop
     {
-      GetKeyState, s, LButton, P
+      GetKeyState, s, %key%, P
       If s = U
         break
     }
-    MouseClick,,,,,,U
+    MouseClick,%pressbutton%,,,,,U
   }
   Else
   {
@@ -236,7 +243,7 @@ checkareas()
     If (cx <= cy)
       ny:=ay
 
-    Click %nx% %ny%
+    Click %pressbutton% %nx% %ny%
     MouseMove,nx,ny
   }
 }
